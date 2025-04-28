@@ -27,6 +27,14 @@ const User = sequelize.define(
       type: DataTypes.STRING,
       defaultValue: "user", // Mặc định ai cũng là user
     },
+    latitude: {
+      type: DataTypes.FLOAT, // Lưu vĩ độ
+      allowNull: true,
+    },
+    longitude: {
+      type: DataTypes.FLOAT, // Lưu kinh độ
+      allowNull: true,
+    },
   },
   {
     timestamps: true,

@@ -26,3 +26,36 @@ exports.profile = async (req, res) => {
     next(err); // Chuyển lỗi đến middleware xử lý lỗi
   }
 };
+
+exports.saveUserLocation = async (req, res, next) => {
+  try {
+    const { userId, latitude, longitude } = req.body;
+
+    if (!userId || !latitude || !longitude) {
+      return res
+        .status(400)
+        .json({ message: "User ID, latitude, and longitude are required" });
+    }
+
+    // Tìm user theo ID
+    const user = await User.findByPk(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Cập nhật vị trí
+    user.latitude = latitude;
+    user.longitude = longitude;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "User location updated successfully",
+      user,
+    });
+  } catch (err) {
+    console.error("Error saving user location", err);
+    next(err);
+  }
+};
