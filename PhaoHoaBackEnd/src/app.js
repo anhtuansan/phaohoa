@@ -8,6 +8,7 @@ const authRoutes = require("./routes/authRoutes");
 const userRoutes = require("./routes/userRoutes");
 const productRoutes = require("./routes/productRoutes");
 const errorHandler = require("./middlewares/errorHandler");
+const adminRoutes = require("./routes/adminRoutes");
 
 app.use(express.json());
 app.use(cors());
@@ -16,6 +17,7 @@ app.use(cors());
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Error handling middleware
 app.use(errorHandler);
