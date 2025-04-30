@@ -59,3 +59,16 @@ exports.saveUserLocation = async (req, res, next) => {
     next(err);
   }
 };
+
+exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await User.findAll({
+      where: { role: "user" }, // Lấy tất cả người dùng có role là "user"
+      attributes: ["id", "username", "email"], // Chỉ trả về các trường cần thiết
+    });
+    res.status(200).json({ success: true, users });
+  } catch (err) {
+    console.error("Error fetching users:", err);
+    res.status(500).json({ success: false, message: "Failed to fetch users" });
+  }
+};
