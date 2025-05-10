@@ -35,6 +35,14 @@ const User = sequelize.define(
       type: DataTypes.FLOAT, // Lưu kinh độ
       allowNull: true,
     },
+    address: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    phone: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
   },
   {
     timestamps: true,

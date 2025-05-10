@@ -2,10 +2,24 @@
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 const User = require("../models/User");
+const axios = require("axios");
+
+const verifyRecaptcha = async (token) => {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const url = `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`;
+  const response = await axios.post(url);
+  return response.data.success;
+};
 
 exports.register = async (req, res, next) => {
-  const { username, password, email } = req.body;
+  const { username, password, email, recaptchaToken } = req.body;
   try {
+    // Kiểm tra reCAPTCHA
+    const isHuman = await verifyRecaptcha(recaptchaToken);
+    if (!isHuman) {
+      return res.status(400).json({ message: "reCAPTCHA verification failed" });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     await User.create({ username, password: hashedPassword, email });
     res.status(201).json({ message: "User created successfully" });
@@ -16,8 +30,14 @@ exports.register = async (req, res, next) => {
 };
 
 exports.login = async (req, res, next) => {
-  const { username, password } = req.body;
+  const { username, password, recaptchaToken } = req.body;
   try {
+    // Kiểm tra reCAPTCHA
+    const isHuman = await verifyRecaptcha(recaptchaToken);
+    if (!isHuman) {
+      return res.status(400).json({ message: "reCAPTCHA verification failed" });
+    }
+
     const user = await User.findOne({ where: { username } });
     if (!user) {
       const error = new Error("User not found");
